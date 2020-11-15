@@ -40,7 +40,7 @@ class PaymentStoreApplicationTests(
         val payment2 = addPayment()
         
         //step 3 - update payment
-        val payment2Updated = updatePayment(payment2.copy(amount = "2".toBigDecimal()))!!
+        val payment2Updated = updatePayment(payment2.copy(amount = "2".toBigDecimal()))
     
         //step 4 - find payment
         getPayment(payment1.id!!) shouldBe payment1
@@ -83,7 +83,7 @@ class PaymentStoreApplicationTests(
         return objectMapper.readValue(response, Array<RestPayment>::class.java)
     }
     
-    private fun updatePayment(payment: RestPayment): RestPayment? {
+    private fun updatePayment(payment: RestPayment): RestPayment {
         val response = mockMvc.perform(patch("/")
                 .contentType(APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(payment)))
