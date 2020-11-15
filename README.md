@@ -2,6 +2,8 @@
 
 This is demo application for payments store.
 
+See [requirements](./java_dev_excercise.pdf).
+
 Run by executing:
 > ./gradlew bootRun
 
