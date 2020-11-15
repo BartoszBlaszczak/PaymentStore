@@ -1,0 +1,18 @@
+GET localhost:8080
+###
+GET localhost:8080/{{paymentId}}
+###
+POST localhost:8080
+Content-Type: application/json
+
+{
+	"amount": 1,
+	"currency": "PLN",
+	"userId": "user,Id",
+	"account": "123"
+}
+> {%
+client.global.set("paymentId", response.body.id)
+%}
+###
+DELETE localhost:8080/{{paymentId}}
