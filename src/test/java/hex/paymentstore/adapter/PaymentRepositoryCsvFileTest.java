@@ -65,6 +65,21 @@ class PaymentRepositoryCsvFileTest {
 	}
 	
 	@Test
+	void should_update_payment() throws IOException {
+		//given
+		PaymentRepositoryCsvFile sut = sut();
+		Payment payment = sut.add(new Payment("id", BigDecimal.ONE, "PLN", new UserId("userId"), new BankAccountNumber("123")));
+		Payment changed = new Payment(payment.id(), BigDecimal.TEN, "PLN", new UserId("userId"), new BankAccountNumber("123"));
+		
+		// when
+		Optional<Payment> updated = sut.update(changed);
+		
+		// then
+		assertTrue(updated.isPresent());
+		assertEquals(changed, updated.get());
+	}
+	
+	@Test
 	void should_remove_payment() throws IOException {
 		//given
 		PaymentRepositoryCsvFile sut = sut();

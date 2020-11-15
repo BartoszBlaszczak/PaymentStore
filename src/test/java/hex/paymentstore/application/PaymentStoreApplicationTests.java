@@ -44,10 +44,13 @@ public class PaymentStoreApplicationTests {
 		RestPayment payment1 = addPayment();
 		RestPayment payment2 = addPayment();
 		
+		//step 3 - update payment
+		RestPayment payment2Updated = updatePayment(new RestPayment(payment2.id(), BigDecimal.TEN, "PLN", "userId", "accountNumber"));
+		
 		//step 3 - find payment
 		assertEquals(getPayment(payment1.id()), payment1);
-		assertEquals(getPayment(payment2.id()), payment2);
-		assertTrue(getAllPayments().containsAll(List.of(payment1, payment2)));
+		assertEquals(getPayment(payment2.id()), payment2Updated);
+		assertTrue(getAllPayments().containsAll(List.of(payment1, payment2Updated)));
 		
 		//step 4 - delete payment and verify it
 		deletePayment(payment1.id());
@@ -56,7 +59,7 @@ public class PaymentStoreApplicationTests {
 	}
 	
 	private RestPayment payment() {
-		return new RestPayment(null, BigDecimal.TEN, "PLN", "userId", "accountNumber");
+		return new RestPayment(null, BigDecimal.ONE, "PLN", "userId", "accountNumber");
 	}
 	
 	private ResultActions tryAddPayment(RestPayment payment) throws Exception {
@@ -88,6 +91,15 @@ public class PaymentStoreApplicationTests {
 				.andExpect(status().isOk())
 				.andReturn().getResponse().getContentAsString();
 		return objectMapper.readValue(response, new TypeReference<>() {});
+	}
+	
+	private RestPayment updatePayment(RestPayment payment) throws Exception {
+		String response = mockMvc.perform(patch("/")
+				.contentType(APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(payment)))
+				.andExpect(status().isOk())
+				.andReturn().getResponse().getContentAsString();
+		return objectMapper.readValue(response, RestPayment.class);
 	}
 	
 	private ResultActions deletePayment(String id) throws Exception {

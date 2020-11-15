@@ -55,6 +55,21 @@ public class PaymentRepositoryCsvFile implements PaymentRepository {
 	}
 	
 	@Override
+	public Optional<Payment> update(Payment payment) {
+		List<Payment> all = getAll();
+		return all.stream().filter(p -> p.id().equals(payment.id()))
+				.findFirst()
+				.map(found -> Try.of(() -> {
+					Payment updated = found.update(payment);
+					List<List<String>> toUpdate = all.stream().map(record -> record.id().equals(payment.id()) ? updated : record).map(this::toRecord).collect(toList());
+					CSVPrinter csvPrinter = new CSVPrinter(new FileWriter(csvFile), csvFormat);
+					csvPrinter.printRecords(toUpdate);
+					csvPrinter.flush();
+					return updated;
+				}).get());
+	}
+	
+	@Override
 	public void remove(String id) {
 		List<List<String>> filteredContent = getAll().stream()
 				.filter(p -> !p.id().equals(id))

@@ -17,11 +17,11 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestController
-public class PaymentController {
+public class PaymentStoreController {
 	private final PaymentRepository repository;
 	private final AddPaymentUseCase addPaymentUseCase;
 	
-	public PaymentController(PaymentRepository repository, AddPaymentUseCase addPaymentUseCase) {
+	public PaymentStoreController(PaymentRepository repository, AddPaymentUseCase addPaymentUseCase) {
 		this.repository = repository;
 		this.addPaymentUseCase = addPaymentUseCase;
 	}
@@ -47,8 +47,19 @@ public class PaymentController {
 				.orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Unable to find payment with id=$id"));
 	}
 	
+	@PatchMapping
+	public ResponseEntity<?> update(@Valid @RequestBody RestPayment payment, Errors errors) {
+		if(errors.hasErrors()) return errorsAsResponse(errors);
+		
+		return ResponseEntity.of(repository.update(payment.toDomain()).map(RestPayment::new));
+	}
 	@DeleteMapping("/{id}")
 	public void delete(@PathVariable String id) {
 		repository.remove(id);
+	}
+	
+	private ResponseEntity<String> errorsAsResponse(Errors errors) {
+		return ResponseEntity.badRequest()
+				.body(errors.getAllErrors().stream().map(ObjectError::getDefaultMessage).collect(toList()).toString());
 	}
 }

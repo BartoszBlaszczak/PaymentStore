@@ -35,6 +35,6 @@ public record RestPayment(
 	}
 	
 	public Payment toDomain() {
-		return new Payment(null, amount, currency, new UserId(userId), new BankAccountNumber(account));
+		return new Payment(id, amount, currency, new UserId(userId), new BankAccountNumber(account));
 	}
 }

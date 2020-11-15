@@ -1,6 +1,6 @@
 package hex.paymentstore.application;
 
-import hex.paymentstore.adapter.PaymentController;
+import hex.paymentstore.adapter.PaymentStoreController;
 import hex.paymentstore.adapter.PaymentRepositoryCsvFile;
 import hex.paymentstore.domain.AddPaymentUseCase;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -24,8 +24,8 @@ public class SpringConfiguration {
 	
 	
 	@Bean
-	public PaymentController controller() throws IOException {
-		return new PaymentController(repository(), addPaymentUseCase());
+	public PaymentStoreController controller() throws IOException {
+		return new PaymentStoreController(repository(), addPaymentUseCase());
 	}
 	
 	@Bean

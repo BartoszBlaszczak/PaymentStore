@@ -7,5 +7,6 @@ public interface PaymentRepository {
 	Payment add(Payment payment);
 	List<Payment> getAll();
 	Optional<Payment> find(String id);
+	Optional<Payment> update(Payment payment);
 	void remove(String id);
 }
