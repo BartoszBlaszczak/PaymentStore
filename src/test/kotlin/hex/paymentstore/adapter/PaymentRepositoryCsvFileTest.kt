@@ -67,9 +67,9 @@ class PaymentRepositoryCsvFileTest : ShouldSpec({
 		val payment = sut.add(Payment("id", BigDecimal.TEN, "PLN", UserId("userId"), BankAccountNumber("123")))
 		val changed = payment.copy(amount = BigDecimal.ONE, currency = "USD")
 		// when
-		val updated = sut.update(changed)
+		sut.update(changed)
 		// then
-		updated shouldBe changed
+		sut.find(payment.id!!) shouldBe changed
 	}
 	
 	should("remove payment") {
