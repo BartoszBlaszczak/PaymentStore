@@ -1,6 +1,6 @@
 package hex.paymentstore.application
 
-import hex.paymentstore.adapter.PaymentController
+import hex.paymentstore.adapter.PaymentStoreController
 import hex.paymentstore.adapter.PaymentRepositoryCsvFile
 import hex.paymentstore.domain.AddPaymentUseCase
 import org.springframework.boot.context.properties.ConfigurationProperties
@@ -16,7 +16,7 @@ import springfox.documentation.spring.web.plugins.Docket
 class SpringConfiguration {
 	var repositoryCsvFilePath:String = ""
 	
-	@Bean fun controller(): PaymentController = PaymentController(repository(), addPaymentUseCase())
+	@Bean fun controller(): PaymentStoreController = PaymentStoreController(repository(), addPaymentUseCase())
 	@Bean fun repository(): PaymentRepositoryCsvFile = PaymentRepositoryCsvFile(repositoryCsvFilePath)
 	@Bean fun addPaymentUseCase(): AddPaymentUseCase = AddPaymentUseCase(repository())
 	

@@ -38,13 +38,16 @@ class PaymentStoreApplicationTests(
         //step 2 - add new payments
         val payment1 = addPayment()
         val payment2 = addPayment()
+        
+        //step 3 - update payment
+        val payment2Updated = updatePayment(payment2.copy(amount = "2".toBigDecimal()))!!
     
-        //step 3 - find payment
+        //step 4 - find payment
         getPayment(payment1.id!!) shouldBe payment1
-        getPayment(payment2.id!!) shouldBe payment2
-        getAllPayments() shouldContainAll listOf(payment1, payment2)
+        getPayment(payment2Updated.id!!) shouldBe payment2Updated
+        getAllPayments() shouldContainAll listOf(payment1, payment2Updated)
     
-        //step 4 - delete payment and verify it
+        //step 5 - delete payment and verify it
         deletePayment(payment1.id!!)
         getAllPayments() shouldNotContain payment1
         tryGetPayment(payment1.id!!).andExpect(status().isNotFound)
@@ -52,9 +55,10 @@ class PaymentStoreApplicationTests(
     
     private fun payment() = RestPayment(null, BigDecimal.TEN, "PLN", "userId", "accountNumber")
     
-    private fun tryAddPayment(payment: RestPayment = payment()): ResultActions = mockMvc.perform(post("/")
-    .contentType(APPLICATION_JSON)
-    .content(objectMapper.writeValueAsString(payment)))
+    private fun tryAddPayment(payment: RestPayment = payment()): ResultActions =
+            mockMvc.perform(post("/")
+                    .contentType(APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(payment)))
     
     private fun addPayment(): RestPayment {
         val response = tryAddPayment()
@@ -77,6 +81,15 @@ class PaymentStoreApplicationTests(
                 .andExpect(status().isOk)
                 .andReturn().response.contentAsString
         return objectMapper.readValue(response, Array<RestPayment>::class.java)
+    }
+    
+    private fun updatePayment(payment: RestPayment): RestPayment? {
+        val response = mockMvc.perform(patch("/")
+                .contentType(APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payment)))
+                .andExpect(status().isOk)
+                .andReturn().response.contentAsString
+        return objectMapper.readValue(response, RestPayment::class.java)
     }
     
     private fun deletePayment(id: String) =

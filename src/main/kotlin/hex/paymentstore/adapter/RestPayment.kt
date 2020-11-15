@@ -22,5 +22,5 @@ data class RestPayment(
 ) {
 	constructor(payment: Payment) : this(payment.id, payment.amount, payment.currency, payment.userId.value, payment.account.value)
 	
-	fun toDomain(): Payment = Payment(null, amount!!, currency!!, UserId(userId!!), BankAccountNumber(account!!))
+	fun toDomain(): Payment = Payment(id, amount!!, currency!!, UserId(userId!!), BankAccountNumber(account!!))
 }

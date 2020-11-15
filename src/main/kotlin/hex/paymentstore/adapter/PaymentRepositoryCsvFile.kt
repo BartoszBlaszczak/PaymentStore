@@ -29,7 +29,22 @@ class PaymentRepositoryCsvFile(csvFilePath: String) : PaymentRepository {
 	private fun readFile() = csvFormat.parse(FileReader(csvFile))
 	
 	override fun find(id: String): Payment? {
-		readFile().iterator().forEach { if (it.get(0) == id) return toPayment(it) }
+		readFile().forEach { if (it.get(0) == id) return toPayment(it) }
+		return null
+	}
+	
+	override fun update(payment: Payment): Payment? {
+		val all = getAll()
+		val found = all.firstOrNull { it.id == payment.id }
+		
+		found?.apply {
+			val updated = found.copy(amount = payment.amount, currency = payment.currency, userId = payment.userId, account = payment.account)
+			val toUpdate = all.map { if (it.id == payment.id) updated else it }.map{ toRecord(it) }
+			val csvPrinter = CSVPrinter(FileWriter(csvFile), csvFormat)
+			csvPrinter.printRecords(toUpdate)
+			csvPrinter.flush()
+			return updated
+		}
 		return null
 	}
 	

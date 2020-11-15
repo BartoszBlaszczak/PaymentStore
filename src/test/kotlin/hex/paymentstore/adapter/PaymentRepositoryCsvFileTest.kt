@@ -18,6 +18,7 @@ class PaymentRepositoryCsvFileTest : ShouldSpec({
 	}
 	
 	should("add payment") {
+		// given
 		val payment = Payment("id", BigDecimal.TEN, "PLN", UserId("userId"), BankAccountNumber("123"))
 		
 		// when
@@ -28,6 +29,7 @@ class PaymentRepositoryCsvFileTest : ShouldSpec({
 	}
 	
 	should("get all payments") {
+		// given
 		val payment1 = Payment("1", BigDecimal.ONE, "PLN", UserId("userId"), BankAccountNumber("123"))
 		val payment2 = Payment("2", BigDecimal.TEN, "PLN", UserId("userId"), BankAccountNumber("456"))
 		val sut = sut()
@@ -41,6 +43,7 @@ class PaymentRepositoryCsvFileTest : ShouldSpec({
 	}
 	
 	should("get payment") {
+		// given
 		val payment = Payment("id", BigDecimal.TEN, "PLN", UserId("userId"), BankAccountNumber("123"))
 		val sut = sut()
 		sut.add(payment)
@@ -58,7 +61,19 @@ class PaymentRepositoryCsvFileTest : ShouldSpec({
 		found shouldBe null
 	}
 	
+	should("update payment") {
+		// given
+		val sut = sut()
+		val payment = sut.add(Payment("id", BigDecimal.TEN, "PLN", UserId("userId"), BankAccountNumber("123")))
+		val changed = payment.copy(amount = BigDecimal.ONE, currency = "USD")
+		// when
+		val updated = sut.update(changed)
+		// then
+		updated shouldBe changed
+	}
+	
 	should("remove payment") {
+		// given
 		val sut = sut()
 		val payment = sut.add(Payment("id", BigDecimal.TEN, "PLN", UserId("userId"), BankAccountNumber("123")))
 		

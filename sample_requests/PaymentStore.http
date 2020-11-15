@@ -15,4 +15,15 @@ Content-Type: application/json
 client.global.set("paymentId", response.body.id)
 %}
 ###
+PATCH localhost:8080
+Content-Type: application/json
+
+{
+  "id": "{{paymentId}}",
+  "amount": 2,
+  "currency": "PLN",
+  "userId": "user,Id",
+  "account": "123"
+}
+###
 DELETE localhost:8080/{{paymentId}}

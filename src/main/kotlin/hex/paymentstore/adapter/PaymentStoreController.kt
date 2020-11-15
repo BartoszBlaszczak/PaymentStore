@@ -11,16 +11,15 @@ import org.springframework.web.server.ResponseStatusException
 import javax.validation.Valid
 
 @RestController
-class PaymentController(
+class PaymentStoreController(
 	private val repository: PaymentRepository,
 	private val addPaymentUseCase: AddPaymentUseCase
 ){
 	
 	@PostMapping
-	fun add(@Valid @RequestBody payment: RestPayment, errors: Errors): ResponseEntity<Any> {
-		if(errors.hasErrors()) {
-			return ResponseEntity.badRequest().body(errors.getAllErrors().map { it.defaultMessage }.toString())
-		}
+	fun add(@Valid @RequestBody payment: RestPayment, errors: Errors): ResponseEntity<out Any> {
+		if(errors.hasErrors()) return errorsAsResponse(errors)
+		
 		val body = addPaymentUseCase.add(payment.toDomain()).let(::RestPayment)
 		return ResponseEntity(body, CREATED)
 	}
@@ -35,7 +34,19 @@ class PaymentController(
 					?.let(::RestPayment)
 					?: throw ResponseStatusException(NOT_FOUND, "Unable to find payment with id=$id")
 	
+	@PatchMapping
+	fun update(@Valid @RequestBody payment: RestPayment, errors: Errors): ResponseEntity<out Any> {
+		if(errors.hasErrors()) return errorsAsResponse(errors)
+		
+		return repository.update(payment.toDomain())
+				?.let { return ResponseEntity.ok(RestPayment(it)) }
+				?:throw ResponseStatusException(NOT_FOUND, "Unable to find payment with id=${payment.id}")
+	}
 	
 	@DeleteMapping("/{id}")
 	fun delete(@PathVariable id: String) = repository.remove(id)
+	
+	private fun errorsAsResponse(errors: Errors): ResponseEntity<String> {
+		return ResponseEntity.badRequest().body(errors.allErrors.map { it.defaultMessage }.toString())
+	}
 }
