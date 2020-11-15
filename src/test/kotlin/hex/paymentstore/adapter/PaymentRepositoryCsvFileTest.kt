@@ -59,9 +59,8 @@ class PaymentRepositoryCsvFileTest : ShouldSpec({
 	}
 	
 	should("remove payment") {
-		val payment = Payment("id", BigDecimal.TEN, "PLN", UserId("userId"), BankAccountNumber("123"))
 		val sut = sut()
-		sut.add(payment)
+		val payment = sut.add(Payment("id", BigDecimal.TEN, "PLN", UserId("userId"), BankAccountNumber("123")))
 		
 		// when
 		sut.remove(payment.id!!)

@@ -23,7 +23,7 @@ import java.math.BigDecimal
 @AutoConfigureMockMvc
 class PaymentStoreApplicationTests(
         @Autowired private val mockMvc: MockMvc,
-        @Autowired private val configuration: SpringConfiguration
+        @Autowired configuration: SpringConfiguration
 )
 {
     init { File(configuration.repositoryCsvFilePath).deleteOnExit() }

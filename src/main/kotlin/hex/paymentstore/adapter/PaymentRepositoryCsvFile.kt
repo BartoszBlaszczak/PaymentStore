@@ -29,11 +29,7 @@ class PaymentRepositoryCsvFile(csvFilePath: String) : PaymentRepository {
 	private fun readFile() = csvFormat.parse(FileReader(csvFile))
 	
 	override fun find(id: String): Payment? {
-		val iterator = readFile().iterator()
-		while (iterator.hasNext()) {
-			val record = iterator.next()
-			if (record.get(0) == id) return toPayment(record)
-		}
+		readFile().iterator().forEach { if (it.get(0) == id) return toPayment(it) }
 		return null
 	}
 	
